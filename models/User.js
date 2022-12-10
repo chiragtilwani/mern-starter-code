@@ -19,12 +19,16 @@ const userSchema = new mongoose.Schema({
         min: 6,
     },
     profilePicture: {
-        type: String,
-        default: "",
+        public_id:String,
+        url:{type:String,default:''}
     },
-    profilePicture: {
-        type: String,
-        default: "",
+    coverPicture: {
+        public_id:String,
+        url:{type:String,default:''}
+    },
+    bio:{
+        type:String,
+        max:50,
     },
     followers: {
         type: Array,
