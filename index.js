@@ -20,12 +20,13 @@ app.use(express.json());
 app.use(helmet());
 app.use(morgan("common"));
 
-//***ERROR HANDLING MIDDLEWARE***
-app.use((error,req,res,next) => {
-    if(res.headerSent){
-        return next(error)
-    }
-    res.status(error.code || 500).json({message:error.message || 'An unknown error occurred'})
+//adding headers to all responses
+app.use((req, res, next) => {
+    res.setHeader('Access-Control-Allow-Origin', '*')
+    res.setHeader('Access-Control-Allow-Headers', 'Origin,X-Requested-with,Content-Type,Accept,Authorization')
+    res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PATCH,DELETE')
+
+    next()
 })
 
 app.use('/api/users',userRoute);
@@ -34,6 +35,15 @@ app.use('/api/users',userRoute);
 app.use((req, res, next) => {
     return next(new HttpError("could not find this route", 404))
 })
+
+//***ERROR HANDLING MIDDLEWARE***
+app.use((error,req,res,next) => {
+    if(res.headerSent){
+        return next(error)
+    }
+    res.status(error.code || 500).json({message:error.message || 'An unknown error occurred'})
+})
+
 
 app.listen(5000,() =>{
     console.log("Backend server is running...")
